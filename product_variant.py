@@ -31,7 +31,7 @@ class product_variant_dimension_type(osv.osv):
 
     _columns = {
         'name' : fields.char('Dimension', size=64),
-        'desc_type' : fields.char('Descrizione', size=64),
+        'desc_type' : fields.char('Descrizione', size=64,required=True),
         'flag_obbl' : fields.char('flag_obbl', size=4),
         'sequence' : fields.integer('Sequence', help="The product 'variants' code will use this to order the dimension values"),
         'value_ids' : fields.one2many('product.variant.dimension.value', 'dimension_id', 'Dimension Values'),
@@ -65,7 +65,7 @@ class product_variant_dimension_value(osv.osv):
 
     _columns = {
         'name' : fields.char('Dimension Value', size=64, required=True),
-        'desc_value' : fields.char('Descrizione Variante', size=64, required=False),
+        'desc_value' : fields.char('Descrizione Variante', size=64, required=True),
         'sequence' : fields.integer('Sequence'),
         'price_extra' : fields.float('Price Extra', size=64, digits=(11, 5)),
         'price_margin' : fields.float('Price Margin', size=64, digits=(11, 5)), #TODO: this field is not implemented yet
