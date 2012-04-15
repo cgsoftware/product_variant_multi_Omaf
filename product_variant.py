@@ -146,13 +146,30 @@ class product_product(osv.osv):
     _inherit = "product.product"
 
     def _variant_name_get(self, cr, uid, ids, name, arg, context={}):
-       # import pdb;pdb.set_trace()
+        #import pdb;pdb.set_trace()
         res = {}
         for product in self.browse(cr, uid, ids, context):
-            r = map(lambda dim: (dim.dimension_id.name or '') + ':' + (dim.name or '-'), product.dimension_value_ids)
-            res[product.id] = ' - '.join(r)
+            #r = map(lambda dim: (dim.dimension_id.name or '') + ':' + (dim.name or '-'), product.dimension_value_ids)
+            #res[product.id] = ' - '.join(r)
+            # RIVISTA LA TECNICA IN MODO DA ORDINARE LA CREAZIONE DELLA DESCRIZIONE VARIANTE SULLA SEQUENZA DELLA DIMENSIONE
+            lst = self._varianti_ordinate(cr, uid, product.id, context)
+            if lst:
+                res[product.id]=''
+                for des in sorted(lst,key=lambda sequence:sequence[0]):                    
+                    res[product.id] += des[1]+':' +des[2] + " "
         return res
-
+    
+    def _varianti_ordinate(self,cr,uid,ids,context):
+        #import pdb;pdb.set_trace()
+        res = {}
+        for product in self.browse(cr, uid, ids, context):
+            lst = []
+            for var in product.dimension_value_ids:
+                lst.append((var.dimension_id.sequence,var.dimension_id.name,var.name,var))
+            if lst:
+                res = lst
+        return res
+    
     def _variant_extra_get(self, cr, uid, ids, name, arg, context={}):
         # import pdb;pdb.set_trace()
         res = {}
