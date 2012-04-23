@@ -76,7 +76,7 @@ class product_variant_dimension_value(osv.osv):
                 'product.variant.dimension.type': (_get_dimension_values, None, 10),
             }),
     }
-    _order = "dimension_sequence, sequence, name"
+    _order = "dimension_sequence asc, sequence, name"
 
 product_variant_dimension_value()
 
@@ -152,7 +152,7 @@ class product_product(osv.osv):
             #r = map(lambda dim: (dim.dimension_id.name or '') + ':' + (dim.name or '-'), product.dimension_value_ids)
             #res[product.id] = ' - '.join(r)
             # RIVISTA LA TECNICA IN MODO DA ORDINARE LA CREAZIONE DELLA DESCRIZIONE VARIANTE SULLA SEQUENZA DELLA DIMENSIONE
-            lst = self._varianti_ordinate(cr, uid, product.id, context)
+            lst = self._varianti_ordinate(cr, uid, [product.id], context)
             if lst:
                 res[product.id]=''
                 for des in sorted(lst,key=lambda sequence:sequence[0]):                    
@@ -161,6 +161,10 @@ class product_product(osv.osv):
     
     def _varianti_ordinate(self,cr,uid,ids,context):
         #import pdb;pdb.set_trace()
+        if type(ids)== type([]):
+            pass
+        else:
+            ids = [ids]
         res = {}
         for product in self.browse(cr, uid, ids, context):
             lst = []
